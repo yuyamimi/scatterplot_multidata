@@ -225,9 +225,6 @@ public class DimensionDistanceCombination {
 			DimensionPair p = parray[i];
 			if (p == null)
 				continue;
-			// System.out.println(nscorearray[p.id][0] + "," + nscorearray[p.id][1] + "," +
-			// nscorearray[p.id][2] + "," + nscorearray[p.id][3] + "," + p.r + " ***");
-			// System.out.println(p.r);
 		}
 		// double minarea = calcMinArea(count);
 		double minarea = calcMinArea(12);
@@ -235,6 +232,8 @@ public class DimensionDistanceCombination {
 		List<Integer> array_sim;
 		DimensionPair[] parray_ob = null;
 		parray_ob = parray;
+
+		// 階層クラスタリング
 		array_sim = HCmain(parray, count);
 		for (int j = 0; j < array_sim.size(); j++) {
 			parray_ob[j] = parray[array_sim.get(j)];
@@ -244,19 +243,6 @@ public class DimensionDistanceCombination {
 		System.out.println("   parameter=" + MAX_AREA + " numcolor=" + numcolor + " numedge=" + numedge + " nums="
 				+ count + " minarea=" + minarea);
 
-		// temporal
-		/*
-		 * { int MIN_COUNT = 12; if(count >= MIN_COUNT) { for(int i = MIN_COUNT; i <
-		 * scorearray.length; i++) parray[i] = null; for(int i = 0; i < MIN_COUNT; i++)
-		 * { DimensionPair p = parray[i]; System.out.println(nscorearray[p.id][0] + ","
-		 * + nscorearray[p.id][1] + "," + nscorearray[p.id][2] + "," +
-		 * nscorearray[p.id][3] + "," + p.r + ",***"); //System.out.println(p.r); }
-		 * for(int i = 0; i < nscorearray.length; i++) { for(int j = 0; j < MIN_COUNT;
-		 * j++) { DimensionPair p = parray[j]; if(p == null || i == p.id) break; if(j ==
-		 * MIN_COUNT - 1) System.out.println(nscorearray[i][0] + "," + nscorearray[i][1]
-		 * + "," + nscorearray[i][2] + "," + nscorearray[i][3] + "," +
-		 * vertices[i].maxscore + ",+++"); } } } }
-		 */
 	}
 
 	static double calcMinArea(int count) {
@@ -306,9 +292,6 @@ public class DimensionDistanceCombination {
 		double[][] simMatrix = new double[count][count];
 		for (int i = 0; i < count; i++) {
 			for (int j = (i + 1); j < count; j++) {
-				//System.out.println("herej" + j);
-				//System.out.println("herepa" + parray.length);
-				//System.out.println("herepea" + parray[j].score[0]);
 				// calculate cosine
 				double len1 = 0.0, len2 = 0.0, inner = 0.0;
 				for (int k = 0; k < NUMDIST; k++) {
@@ -318,7 +301,7 @@ public class DimensionDistanceCombination {
 				}
 				inner /= (Math.sqrt(len1) * Math.sqrt(len2));
 				simMatrix[i][j] = inner;
-				System.out.print("i:"+i+"j:"+j+"inner"+inner + " ");
+				System.out.print("i:" + i + "j:" + j + "inner" + inner + " ");
 			}
 			System.out.println("");
 		}
@@ -337,11 +320,6 @@ public class DimensionDistanceCombination {
 		}
 		return clusters.get(0);
 	}
-	/*
-	 * for (int i = 0; i < clusters.size(); i++) { System.out.print("Group " + (i+1)
-	 * + ": "); List<Integer> cluster = clusters.get(i); for (int j = 0; j <
-	 * cluster.size(); j++) { System.out.print(j); } System.out.println(); } }
-	 */
 
 	// 階層的クラスタリングを実行するメソッド
 	private static List<List<Integer>> hierarchicalClustering(double[][] simMatrix) {
@@ -349,62 +327,28 @@ public class DimensionDistanceCombination {
 		// 初期クラスタ：各要素を1つのクラスタとする
 		List<List<Integer>> clusters = new ArrayList<>();
 		for (int i = 0; i < n; i++) {
-			 List<Integer> cluster = new ArrayList<>();
-		        cluster.add(i);
-		        clusters.add(cluster);
+			List<Integer> cluster = new ArrayList<>();
+			cluster.add(i);
+			clusters.add(cluster);
 		}
 		// クラスタ数が1になるまでマージを繰り返す
 		while (clusters.size() > 1) {
 			// 最も類似度が高い2つのクラスタをマージする
 			int minI = 0, minJ = 1;
-			
-			 double minDist = Double.MAX_VALUE;
-		        for (int i = 0; i < clusters.size(); i++) {
-		        	List<Integer> cluster = clusters.get(i);
-					for (int j = 0; j < cluster.size(); j++) {
-						System.out.print(cluster.get(j) + " ");
-					}
-					System.out.println("");
-		            for (int j = i + 1; j < clusters.size(); j++) {
-		                double dist = computeClusterDistance(clusters.get(i), clusters.get(j), simMatrix);
-		                if (dist < minDist) {
-		                    minI = i;
-		                    minJ = j;
-		                    minDist = dist;
-		                }
-		            }
-		        }
 
-		        // マージした新しいクラスタを作成し、既存のクラスタから削除する
-		        List<Integer> mergedCluster = new ArrayList<>();
-		        mergedCluster.addAll(clusters.get(minI));
-		        mergedCluster.addAll(clusters.get(minJ));
-		        clusters.remove(minJ);
-		        clusters.remove(minI);
-		        clusters.add(mergedCluster);
-		    }
-
-		    return clusters;
-		}
-
-		private static double computeClusterDistance(List<Integer> cluster1, List<Integer> cluster2, double[][] simMatrix) {
-		    double sum = 0.0;
-		    for (int i : cluster1) {
-		        for (int j : cluster2) {
-		            sum += simMatrix[i][j];
-		        }
-		    }
-		    return sum / (cluster1.size() * cluster2.size());
-		}
-		/*
-			double minSim = simMatrix[0][1];
+			double minDist = Double.MIN_VALUE;
 			for (int i = 0; i < clusters.size(); i++) {
+				List<Integer> cluster = clusters.get(i);
+				for (int j = 0; j < cluster.size(); j++) {
+					System.out.print(cluster.get(j) + " ");
+				}
+				System.out.println("");
 				for (int j = i + 1; j < clusters.size(); j++) {
-					double sim = computeClusterSim(clusters.get(i), clusters.get(j), simMatrix);
-					if (sim > minSim) {
+					double dist = computeClusterDistance(clusters.get(i), clusters.get(j), simMatrix);
+					if (dist > minDist) {
 						minI = i;
 						minJ = j;
-						minSim = sim;
+						minDist = dist;
 					}
 				}
 			}
@@ -416,132 +360,26 @@ public class DimensionDistanceCombination {
 			clusters.remove(minI);
 			clusters.add(mergedCluster);
 		}
+
 		return clusters;
 	}
 
-	// 階層的クラスタリングにおける2つ
-	private static double computeClusterSim(List<Integer> cluster1, List<Integer> cluster2, double[][] simMatrix) {
-		double sum = 0.0;
-		for (int i = 0; i < cluster1.size(); i++) {
-			for (int j = 0; j < cluster2.size(); j++) {
-				sum += simMatrix[cluster1.get(i)][cluster2.get(j)];
+	private static double computeClusterDistance(List<Integer> cluster1, List<Integer> cluster2, double[][] simMatrix) {
+		double min = Double.MIN_VALUE;
+		;
+
+		for (int i : cluster1) {
+			for (int j : cluster2) {
+				if (simMatrix[i][j] > min) {
+					min = simMatrix[i][j];
+				}
 			}
 		}
-		return (cluster1.size() * cluster2.size()) / sum;
-		// return sum / (cluster1.size() * cluster2.size());
+
+		return min;
+		/*
+		 * double sum = 0.0; for (int i : cluster1) { for (int j : cluster2) { sum +=
+		 * simMatrix[i][j]; } } return sum / (cluster1.size() * cluster2.size());
+		 */
 	}
-*/
-	/*
-	 * public static void HCmain(double distanceMatrix[][]) { // 入力となる距離行列を定義する
-	 * 
-	 * // クラスタリングを行う List<Set<Integer>> clusters =
-	 * hierarchicalClustering(distanceMatrix);
-	 * 
-	 * 
-	 * // 結果を表示する for (Set<Integer> cluster : clusters) {
-	 * System.out.println(cluster); } }
-	 * 
-	 * public static List<Set<Integer>> hierarchicalClustering(double[][]
-	 * distanceMatrix) { List<Set<Integer>> clusters = new ArrayList<>();
-	 * 
-	 * // 初期状態では、各要素が1つのクラスターとなる for (int i = 0; i < distanceMatrix.length; i++) {
-	 * Set<Integer> cluster = new HashSet<>(); cluster.add(i);
-	 * clusters.add(cluster); }
-	 * 
-	 * while (clusters.size() > 1) { // 最小距離のクラスターを探す double minDistance =
-	 * Double.MAX_VALUE;
-	 * 
-	 * int minI = -1, minJ = -1; for (int i = 0; i < clusters.size(); i++) { for
-	 * (int j = i + 1; j < clusters.size(); j++) { double distance =
-	 * getDistance(clusters.get(i), clusters.get(j), distanceMatrix);
-	 * //System.out.println("here"); //System.out.println(distance); if (distance <
-	 * minDistance) { minDistance = distance; minI = i; minJ = j; } } } //
-	 * 2つのクラスターを統合する //System.out.println(clusters.get(minJ)); Set<Integer>
-	 * mergedCluster = new HashSet<>(clusters.get(minI));
-	 * mergedCluster.addAll(clusters.get(minJ)); clusters.remove(minJ);
-	 * clusters.set(minI, mergedCluster); } //System.out.println(clusters); return
-	 * clusters; }
-	 * 
-	 * private static double getDistance(Set<Integer> cluster1, Set<Integer>
-	 * cluster2, double[][] distanceMatrix) { double minDistance = Double.MAX_VALUE;
-	 * for (int i : cluster1) { for (int j : cluster2) { double distance =
-	 * distanceMatrix[i][j]; if (distance < minDistance) { minDistance = distance; }
-	 * } } return minDistance; }
-	 */
-	/*
-	 * static void applyGraphColoring() {
-	 * 
-	 * features = new double[NUMDIST][]; for(int i = 0; i < NUMDIST; i++)
-	 * features[i] = new double[distarray.length];
-	 * 
-	 * sum = new double[distarray.length]; sum2 = new double[distarray.length]; sort
-	 * = new int[distarray.length]; for(int i = 0; i < distarray.length; i++)
-	 * sort[i] = i;
-	 * 
-	 * s = new double[distarray.length][]; adj = new int[distarray.length][];
-	 * for(int i = 0; i < distarray.length; i++) { s[i] = new
-	 * double[distarray.length]; adj[i] = new int[distarray.length]; }
-	 * 
-	 * naarray = new double[NUMDIST]; nbarray = new double[NUMDIST]; inparray = new
-	 * double[NUMDIST];
-	 * 
-	 * for(int i= 0; i < distarray.length; i++){ for(int j = 0; j < NUMDIST; j++){
-	 * double onedim = distarray[i][j] * distarray[i][j]; sum[i] += onedim; sum2[i]
-	 * += onedim; } }
-	 * 
-	 * 
-	 * for(int i = 0; i < distarray.length; i++){ for(int j = (i + 1); j <
-	 * distarray.length; j++){ if(sum2[i] < sum2[j]){ double tmp = sum2[i]; sum2[i]
-	 * = sum2[j]; sum2[j] = tmp;
-	 * 
-	 * int tp = sort[i]; sort[i] = sort[j]; sort[j] = tp; } } }
-	 * 
-	 * for(int j = 0; j < distarray.length; j++){ for(int i = 0; i < NUMDIST; i++){
-	 * features[i][j] = distarray[sort[j]][i]; } }
-	 * 
-	 * double na = 0.0, nb = 0.0, inp = 0.0; for(int j = 0; j < distarray.length;
-	 * j++){ for(int j2 = 0; j2 < distarray.length; j2++){ for(int i = 0; i <
-	 * NUMDIST; i++){ naarray[i] = features[i][j] * features[i][j]; nbarray[i] =
-	 * features[i][j2] * features[i][j2]; inparray[i] = features[i][j] *
-	 * features[i][j2]; na = naarray[i] + na; nb = nbarray[i] + nb; inp = inp +
-	 * inparray[i]; } s[j][j2] = na * nb - inp * inp; na = nb = inp = 0.0; } }
-	 * 
-	 * int pcounter = 0, ncounter = 0; double sup = MIN_VECTOR; for(int j = 0; j <
-	 * distarray.length; j++){ for(int j2 = 0; j2 < distarray.length; j2++){
-	 * if(s[j][j2] > sup){ adj[j][j2] = 0; ncounter++; } else{ adj[j][j2] = 1;
-	 * pcounter++; } } }
-	 * 
-	 * int d[][]; d = new int[distarray.length][]; for(int i = 0; i <
-	 * distarray.length; i++) d[i] = new int[2];
-	 * 
-	 * for(int j = 0; j < distarray.length; j++){ d[j][1] = 0; d[j][0] = j; for(int
-	 * j2 = 0; j2 < distarray.length; j2++){ d[j][1] = d[j][1] + adj[j][j2]; } }
-	 * 
-	 * for(int p = 0; p < distarray.length; p++){ for(int q = (p + 1); q <
-	 * distarray.length; q++){ if(d[p][1] < d[q][1]){ int tmp = d[p][1]; d[p][1] =
-	 * d[q][1]; d[q][1] = tmp;
-	 * 
-	 * tmp = d[p][0]; d[p][0] = d[q][0]; d[q][0] = tmp; } } }
-	 * 
-	 * int c[]; c = new int[distarray.length]; int numcolor = 1, numfix = 0;
-	 * 
-	 * for(int j = 0; j < distarray.length; j++){ if(c[d[j][0]] < 1){ c[d[j][0]] =
-	 * numcolor; for(int j2 = (j + 1); j2 < distarray.length; j2++){
-	 * if(adj[d[j][0]][d[j2][0]] == 0){ if(c[d[j2][0]] < 1){ c[d[j2][0]] = numcolor;
-	 * } } } numcolor++; } } System.out.println("   numcolor=" + numcolor +
-	 * "  numedge=" + pcounter + "/" + (pcounter+ncounter) + " d=" + MIN_VECTOR);
-	 * 
-	 * int count = 0; //for(int j = 0; j < distarray.length; j++){ for(int j =
-	 * distarray.length - 1; j >= 0; j--){ //System.out.println("         j=" + j +
-	 * " sort[j]=" + sort[j] + " c[j]=" + c[j]); if(c[j] == 1){ DimensionPair p =
-	 * new DimensionPair(); p.id1 = sort[j] / iset.getNumObjective(); p.id2 =
-	 * sort[j] - p.id1 * iset.getNumObjective(); p.r = sum[sort[j]]; parray[count++]
-	 * = p; //System.out.println(distarray[sort[j]][0] + "," + distarray[sort[j]][1]
-	 * + "," + distarray[sort[j]][2] + "," + distarray[sort[j]][3]);
-	 * System.out.println(p.r); } } for(int j = count; j < distarray.length; j++)
-	 * parray[j] = null;
-	 * 
-	 * }
-	 * 
-	 */
 }

@@ -119,7 +119,6 @@ public class IndividualSP {
 		numclusters = n;
 	}
 
-
 	/*****/
 	public IndividualSet getIndividualSet() {
 		return iset;
@@ -136,7 +135,7 @@ public class IndividualSP {
 	/******/
 
 	public void draw(Graphics2D gg2, double scl) {
-		
+
 		if (iset == null || vlist == null)
 			return;
 		g2 = gg2;
@@ -157,8 +156,13 @@ public class IndividualSP {
 			for (int j = 0; j < ncell; j++, count++) {
 				if (count >= vlist.size())
 					return;
-				double x = ((double) j + 0.5) * size - 1.0;
-				drawOneSP(x, y, size, count);
+				if (i % 2 == 0) {
+					double x = ((double) j + 0.5) * size - 1.0;
+					drawOneSP(x, y, size, count);
+				} else if (i % 2 != 0) {
+					double x = ((double) (ncell - j - 1) + 0.5) * size - 1.0;
+					drawOneSP(x, y, size, count);
+				}
 			}
 		}
 	}
@@ -178,7 +182,7 @@ public class IndividualSP {
 		g2.setStroke(new BasicStroke(1.0f));
 
 		p1 = du.transformPosition(minx, maxy, 0.0, 1);
-	
+
 		p2 = du.transformPosition(minx, miny, 0.0, 2);
 		p3 = du.transformPosition(maxx, miny, 0.0, 3);
 		p4 = du.transformPosition(maxx, maxy, 0.0, 4);
@@ -194,7 +198,6 @@ public class IndividualSP {
 		double rgb[] = new double[3];
 
 		IndividualSet ps = iset;
-		
 
 		// System.out.println(vlist.size());
 		/*****/
@@ -237,7 +240,7 @@ public class IndividualSP {
 						polygon.moveTo((int) p1[0], (int) p1[1]);
 					else
 						polygon.lineTo((int) p1[0], (int) p1[1]);
-					//System.out.println("1:   i=" + i + " j=" + j + " x=" + p1[0] + " y=" + p1[1]);
+					// System.out.println("1: i=" + i + " j=" + j + " x=" + p1[0] + " y=" + p1[1]);
 				}
 				g2.fill(polygon);
 
@@ -338,8 +341,9 @@ public class IndividualSP {
 					polygon.moveTo((int) p1[0], (int) p1[1]);
 				else
 					polygon.lineTo((int) p1[0], (int) p1[1]);
-				//System.out.println("2:   i=" + i + " j=" + j + " xx=" + xx + " yy=" + yy + " x=" + p1[0] + " y=" + p1[1]);
-				
+				// System.out.println("2: i=" + i + " j=" + j + " xx=" + xx + " yy=" + yy + "
+				// x=" + p1[0] + " y=" + p1[1]);
+
 			}
 			g2.fill(polygon);
 

@@ -125,6 +125,7 @@ public class IndividualSP {
 	}
 
 	void drawOneSP(double sx, double sy, double size, int pid) {
+		System.out.println("here");
 		int NUMV = 6;
 		double VRAD = 0.02 * size / Math.sqrt(scale);
 		int xposId = vlist.get(pid)[0];
