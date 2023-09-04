@@ -4,8 +4,7 @@ package ocha.itolab.hidden2.applet.spset3awt;
 import java.awt.*;
 import javax.swing.*;
 import java.util.*;
-//import com.jogamp.opengl.awt.GLCanvas;
-//import com.jogamp.opengl.util.Animator;
+
 
 public class NumdimViewer extends JApplet {
 
@@ -19,7 +18,7 @@ public class NumdimViewer extends JApplet {
 	
 	
 	/**
-	 * applet ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Aï¿½eï¿½ï¿½fï¿½[ï¿½^ï¿½\ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	 * applet ‚ğ‰Šú‰»‚µAŠeíƒf[ƒ^\‘¢‚ğ‰Šú‰»‚·‚é
 	 */
 	public void init() {
 		setSize(new Dimension(800,500));
@@ -27,19 +26,19 @@ public class NumdimViewer extends JApplet {
 	}
 
 	/**
-	 * applet ï¿½ÌŠeï¿½Cï¿½xï¿½ï¿½ï¿½gï¿½Ìï¿½tï¿½ï¿½ï¿½Xï¿½^ï¿½[ï¿½gï¿½ï¿½ï¿½ï¿½
+	 * applet ‚ÌŠeƒCƒxƒ“ƒg‚Ìó•t‚ğƒXƒ^[ƒg‚·‚é
 	 */
 	public void start() {
 	}
 
 	/**
-	 * applet ï¿½ÌŠeï¿½Cï¿½xï¿½ï¿½ï¿½gï¿½Ìï¿½tï¿½ï¿½ï¿½Xï¿½gï¿½bï¿½vï¿½ï¿½ï¿½ï¿½
+	 * applet ‚ÌŠeƒCƒxƒ“ƒg‚Ìó•t‚ğƒXƒgƒbƒv‚·‚é
 	 */
 	public void stop() {
 	}
 
 	/**
-	 * appletï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	 * applet“™‚ğ‰Šú‰»‚·‚é
 	 */
 	private void buildGUI() {
 
@@ -61,7 +60,7 @@ public class NumdimViewer extends JApplet {
 		cl.setSelectionPanel(iSelection);
 		icanvas.addCursorListener(cl);
 		
-		// Canvasï¿½ï¿½ViewingPanelï¿½Ìƒï¿½ï¿½Cï¿½Aï¿½Eï¿½g
+		// Canvas‚ÆViewingPanel‚ÌƒŒƒCƒAƒEƒg
 		JPanel mainPanel = new JPanel();
 		mainPanel.setLayout(new BorderLayout());
 		JPanel p1 = new JPanel();
@@ -70,7 +69,7 @@ public class NumdimViewer extends JApplet {
 		mainPanel.add(p1, BorderLayout.CENTER);
 		mainPanel.add(iSelection, BorderLayout.WEST);
 		
-		// ï¿½Eï¿½Bï¿½ï¿½ï¿½hï¿½Eï¿½ï¿½Ìƒï¿½ï¿½Cï¿½Aï¿½Eï¿½g
+		// ƒEƒBƒ“ƒhƒEã‚ÌƒŒƒCƒAƒEƒg
 		windowContainer = this.getContentPane();
 		windowContainer.setLayout(new BorderLayout());
 		windowContainer.add(mainPanel, BorderLayout.CENTER);
@@ -79,20 +78,20 @@ public class NumdimViewer extends JApplet {
 	}
 
 	/**
-	 * mainï¿½Öï¿½
-	 * @param args ï¿½ï¿½ï¿½sï¿½ï¿½ï¿½Ìˆï¿½ï¿½ï¿½
+	 * mainŠÖ”
+	 * @param args Às‚Ìˆø”
 	 */
 	public static void main(String[] args) {
 		ocha.itolab.hidden2.applet.Window window =
 			new ocha.itolab.hidden2.applet.Window(
-				"HiddenViewer",800, 600, Color.lightGray); //Windowï¿½ï¿½ï¿½ì¬
-		NumdimViewer nv = new NumdimViewer(); //ï¿½Vï¿½Xï¿½eï¿½ï¿½ï¿½ï¿½ï¿½Nï¿½ï¿½
+				"HiddenViewer",800, 600, Color.lightGray); //Window‚ğì¬
+		NumdimViewer nv = new NumdimViewer(); //ƒVƒXƒeƒ€‚ğ‹N“®
 
-		nv.init(); //ï¿½Vï¿½Xï¿½eï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-		window.getContentPane().add(nv); //windowï¿½ÉƒVï¿½Xï¿½eï¿½ï¿½ï¿½ï¿½nï¿½ï¿½
+		nv.init(); //ƒVƒXƒeƒ€‰Šú‰»
+		window.getContentPane().add(nv); //window‚ÉƒVƒXƒeƒ€‚ğ“n‚·
 		window.setVisible(true); //??
 
-		nv.start(); //ï¿½Vï¿½Xï¿½eï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½æ‚¤ï¿½É‚ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½
+		nv.start(); //ƒVƒXƒeƒ€‚ğˆµ‚¦‚é‚æ‚¤‚É‚µ‚Ä‚¢‚é
 	}
 
 }

@@ -42,8 +42,7 @@ public class IndividualDrawer {
 	int windowX, windowY, windowWidth, windowHeight;
 	
 	IndividualSP dsp;
-	IndividualPL dpl;
-
+	
 	public static int SAVE_AS_IS = 0;
 	public static int SAVE_UPPER_LEFT = 1;
 	public static int SAVE_UPPER_RIGHT = 2;

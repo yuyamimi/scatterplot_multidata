@@ -7,8 +7,6 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 
-//import com.jogamp.opengl.awt.GLCanvas;
-
 import ocha.itolab.hidden2.core.data.OneIndividual;
 import ocha.itolab.hidden2.core.tool.OutlierDetector;
 
