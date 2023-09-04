@@ -120,8 +120,14 @@ public class IndividualSP {
 			for (int j = 0; j < ncell; j++, count++) {
 				if (count >= vlist.size())
 					return;
-				double x = ((double) j + 0.5) * size - 1.0;
-				drawOneSP(x, y, size, count);
+				if (i % 2 == 0) {
+					double x = ((double) j + 0.5) * size - 1.0;
+					 System.out.println("here");
+					drawOneSP(x, y, size, count);
+				} else if (i % 2 != 0) {
+					double x = ((double) (ncell - j - 1) + 0.5) * size - 1.0;
+					drawOneSP(x, y, size, count);
+				}
 			}
 		}
 	}
@@ -310,7 +316,7 @@ public class IndividualSP {
 	void writeOneString(double x, double y, String word) {
 		if (word == null || word.length() <= 0)
 			return;
-		Font font = new Font("MSƒSƒVƒbƒN", Font.BOLD, 11);
+		Font font = new Font("MSï¿½Sï¿½Vï¿½bï¿½N", Font.BOLD, 11);
 		g2.setFont(font);
 		g2.drawString(word, (int) p1[0], (int) p1[1]);
 	}
