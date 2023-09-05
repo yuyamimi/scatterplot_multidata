@@ -198,27 +198,20 @@ public class DimensionDistanceCombination {
   		
   		for(int i = count; i < scorearray.length; i++)
   			parray[i] = null;
-		//for(int i = 0; i < count; i++) {
-  		for(int i = 0; i < 12; i++) {
+		for(int i = 0; i < count; i++) {
+  		//for(int i = 0; i < 12; i++) {
 			DimensionPair p = parray[i];
 			if(p == null) continue;
 			//System.out.println(nscorearray[p.id][0] + "," + nscorearray[p.id][1] + "," + nscorearray[p.id][2] + "," + nscorearray[p.id][3] + "," + p.r + " ***");
 			//System.out.println(p.r);
 		}
-		//double minarea = calcMinArea(count);
-  		double minarea = calcMinArea(12);
+		double minarea = calcMinArea(count);
+  		//double minarea = calcMinArea(12);
 		System.out.println("   parameter=" + MAX_AREA + " numcolor=" + numcolor + " numedge=" + numedge + " nums=" + count + " minarea=" + minarea);
 		
 		List<Integer> array_sim;
 		DimensionPair[] parray_ob = null;
 		parray_ob = parray;
-
-		System.out.println("count"+count);
-		for(int i = 0;i < count;i++) {
-			for(int j = 0;j < NUMDIST;j++) {
-				System.out.println("parrayi:"+i+"parray[i][j]"+parray[i].score[j]);
-			}
-		}
 		// 階層クラスタリング
 		array_sim = HCmain(parray,count);
 		for (int j = 0; j < array_sim.size(); j++) {
