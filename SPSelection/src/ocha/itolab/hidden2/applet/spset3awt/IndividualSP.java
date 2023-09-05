@@ -103,7 +103,6 @@ public class IndividualSP {
 			return;
 		g2 = gg2;
 		scale = scl;
-
 		int ncell = (int) (Math.sqrt(vlist.size()) - 1.0e-6) + 1;
 		double size = 2.0 / (double) ncell;
 
@@ -122,7 +121,6 @@ public class IndividualSP {
 					return;
 				if (i % 2 == 0) {
 					double x = ((double) j + 0.5) * size - 1.0;
-					 System.out.println("here");
 					drawOneSP(x, y, size, count);
 				} else if (i % 2 != 0) {
 					double x = ((double) (ncell - j - 1) + 0.5) * size - 1.0;

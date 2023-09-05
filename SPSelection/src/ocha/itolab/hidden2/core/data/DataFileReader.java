@@ -15,7 +15,7 @@ public class DataFileReader {
 	int phase = 1, numExplain = 0, numObjective, numCategory = 0, numBoolean = 0, classId = -1;
 
 	/**
-	 * Plotƒtƒ@ƒCƒ‹‚ğŠJ‚­
+	 * Plotï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½Jï¿½ï¿½
 	 */
 	void open(String filename) {
 		this.filename = filename;
@@ -33,7 +33,7 @@ public class DataFileReader {
 
 
 	/**
-	 * Plotƒtƒ@ƒCƒ‹‚ğ•Â‚¶‚é
+	 * Plotï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½ï¿½Â‚ï¿½ï¿½ï¿½
 	 */
 	public void close() {
 		try {
@@ -45,26 +45,26 @@ public class DataFileReader {
 
 
 	/**
-	 * Plotƒtƒ@ƒCƒ‹‚Ì1s‚ğ“Ç‚Ş
+	 * Plotï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½ï¿½1ï¿½sï¿½ï¿½Ç‚ï¿½
 	 */
 	public String[] readLine() {
 		String wordarray[] = null;
 
 		try {
 
-			// EOF‚Ü‚Å“Ç‚İ‘±‚¯‚é
+			// EOFï¿½Ü‚Å“Ç‚İ‘ï¿½ï¿½ï¿½ï¿½ï¿½
 			String line = breader.readLine();
 			if (line == null) return null;
 			//System.out.println(line);
 
-			// ‹ós‚Å‚ ‚ê‚Î–³ˆÓ–¡‚È“à—e‚ğ•Ô‚·
+			// ï¿½ï¿½sï¿½Å‚ï¿½ï¿½ï¿½Î–ï¿½ï¿½Ó–ï¿½ï¿½È“ï¿½ï¿½eï¿½ï¿½Ô‚ï¿½
 			if(line.length() <= 0) {
 				wordarray = new String[1];
 				wordarray[0] = "";
 				return wordarray;
 			}
 
-			// 1s‚ğ’PŒê‚²‚Æ‚É‹æØ‚é
+			// 1ï¿½sï¿½ï¿½Pï¿½ê‚²ï¿½Æ‚É‹ï¿½Ø‚ï¿½
 			StringTokenizer tokenBuffer = new StringTokenizer(line, ",");
 			wordarray = new String[tokenBuffer.countTokens()];
 			for(int i = 0; i < wordarray.length; i++) {
@@ -75,7 +75,7 @@ public class DataFileReader {
 			e.printStackTrace();
 		}
 
-		// ‰ğ“ÇŒ‹‰Ê‚ğ•Ô‚·
+		// ï¿½ï¿½ÇŒï¿½ï¿½Ê‚ï¿½Ô‚ï¿½
 		return wordarray;
 	}
 
@@ -83,21 +83,21 @@ public class DataFileReader {
 
 
 	/**
-	 * ƒtƒ@ƒCƒ‹‚ğ“Ç‚ñ‚ÅIndividualSetƒNƒ‰ƒX‚ğ•Ô‚·
+	 * ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½ï¿½Ç‚ï¿½ï¿½IndividualSetï¿½Nï¿½ï¿½ï¿½Xï¿½ï¿½Ô‚ï¿½
 	 */
 	public IndividualSet read(String filename) {
 		System.out.println("Reading " + filename + " ...");
 
-		// ƒtƒ@ƒCƒ‹‚ğŠJ‚­
+		// ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½Jï¿½ï¿½
 		open(filename);
 
-		// ƒtƒ@ƒCƒ‹‚ğ1s‚¸‚Â“Ç‚Ş
+		// ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½ï¿½1ï¿½sï¿½ï¿½ï¿½Â“Ç‚ï¿½
 		while(true) {
 			String w[] = readLine();
 			if(w == null) break;
 			if(w[0].length() <= 0) continue;
 
-			// 3s–ÚˆÈ~
+			// 3ï¿½sï¿½ÚˆÈ~
 			if(phase >= 3) {
 				OneIndividual p = ps.addOneIndividual();
 				int ie = 0, io = 0, ic = 0, ib = 0;
@@ -125,20 +125,20 @@ public class DataFileReader {
 
 			}
 
-			// 2s–Ú
+			// 2ï¿½sï¿½ï¿½
 			else if(phase == 2) {
 
-				// Še•Ï”‚Ì–¼‘O‚ğƒZƒbƒg‚·‚é
+				// ï¿½eï¿½Ïï¿½ï¿½Ì–ï¿½ï¿½Oï¿½ï¿½ï¿½Zï¿½bï¿½gï¿½ï¿½ï¿½ï¿½
 				for(int i = 0; i < w.length; i++) {
 					ps.setValueName(i, w[i]);
 				}
 				phase++;  continue;
 			}
 
-			// 1s–Ú
+			// 1ï¿½sï¿½ï¿½
 			else {
 
-				// “ü—ÍEo—Í‚ÌŸŒ³”‚ğŠm’è‚·‚é
+				// ï¿½ï¿½ï¿½ÍEï¿½oï¿½Í‚Ìï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½mï¿½è‚·ï¿½ï¿½
 				for(int i = 0; i < w.length; i++) {
 					if(w[i].startsWith("Explain") == true)
 						numExplain++;
@@ -151,7 +151,6 @@ public class DataFileReader {
 				}
 				System.out.println("Exp:" + numExplain);
 				System.out.println("Obj:" + numObjective);
-
 				ps = new IndividualSet(numExplain, numObjective, numCategory, numBoolean);
 				for(int i = 0; i < w.length; i++) {
 					if(w[i].startsWith("Explain") == true)
@@ -173,7 +172,7 @@ public class DataFileReader {
 		}
 
 
-		// ƒtƒ@ƒCƒ‹‚ğ“Ç‚ñ‚¾Œã‚ÌŒãˆ—
+		// ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½ï¿½Ç‚ñ‚¾Œï¿½ÌŒãˆï¿½ï¿½
 		ps.filename = this.filename;
 		ps.finalize();
 

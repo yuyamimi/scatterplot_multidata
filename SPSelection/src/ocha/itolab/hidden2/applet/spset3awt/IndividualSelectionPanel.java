@@ -170,7 +170,7 @@ public class IndividualSelectionPanel extends JPanel {
 
 
 	/**
-	 * ƒ^ƒu‚Å‹æØ‚ç‚ê‚½•Ê‚Ìƒpƒlƒ‹‚ğì‚é
+	 * ï¿½^ï¿½uï¿½Å‹ï¿½Ø‚ï¿½ê‚½ï¿½Ê‚Ìƒpï¿½lï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	 */
 	public void generatePanels() {
 		if(iset == null) return;
@@ -343,7 +343,7 @@ public class IndividualSelectionPanel extends JPanel {
 			JSlider sliderChanged = (JSlider) e.getSource();
 			if (sliderChanged == numScatterSlider) {
 				if(iset == null) return;
-				double v = (double)numScatterSlider.getValue() / 200.0;
+				double v = (double)numScatterSlider.getValue() / 100.0;
 				numSP = (int)(v * iset.getNumExplain() * iset.getNumObjective());
 				icanvas.setNumSP(numSP);
 				dsp.setIsOutlier2(false);
