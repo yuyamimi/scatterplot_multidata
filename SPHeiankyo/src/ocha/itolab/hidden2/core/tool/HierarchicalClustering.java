@@ -35,8 +35,8 @@ public class HierarchicalClustering {
 		}
 
 		// クラスタリング
-		// List<List<Integer>> clusters = hierarchicalClustering(simMatrix);//最短距離法
-		List<List<Integer>> clusters = centralClustering(simMatrix, parray);// 重心法
+		 List<List<Integer>> clusters = hierarchicalClustering(simMatrix);//最短距離法
+		//List<List<Integer>> clusters = centralClustering(simMatrix, parray);// 重心法
 		// List<List<Integer>> clusters = kmeansClustering(simMatrix, count,
 		// parray);//kmeans法
 		return clusters.get(0);
@@ -78,8 +78,13 @@ public class HierarchicalClustering {
 			List<Integer> mergedCluster = new ArrayList<>();
 			mergedCluster.addAll(clusters.get(minI));
 			mergedCluster.addAll(clusters.get(minJ));
-			clusters.remove(minJ);
-			clusters.remove(minI);
+			if (minJ < minI) {
+				clusters.remove(minI);
+				clusters.remove(minJ);
+			} else {
+				clusters.remove(minJ);
+				clusters.remove(minI);
+			}
 			clusters.add(mergedCluster);
 		}
 
@@ -98,10 +103,6 @@ public class HierarchicalClustering {
 		}
 
 		return min;
-		/*
-		 * double sum = 0.0; for (int i : cluster1) { for (int j : cluster2) { sum +=
-		 * simMatrix[i][j]; } } return sum / (cluster1.size() * cluster2.size());
-		 */
 	}
 
 	// 重心法
