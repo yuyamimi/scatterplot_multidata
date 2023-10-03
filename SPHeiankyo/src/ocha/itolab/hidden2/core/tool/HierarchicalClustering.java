@@ -23,7 +23,7 @@ public class HierarchicalClustering {
 					len1 += (parray[i].score[k] * parray[i].score[k]);
 					len2 += (parray[j].score[k] * parray[j].score[k]);
 					inner += (parray[i].score[k] * parray[j].score[k]);
-					//System.out.print("before!!" + parray[i].score[k]);
+					// System.out.print("before!!" + parray[i].score[k]);
 				}
 				System.out.println("");
 
@@ -35,10 +35,11 @@ public class HierarchicalClustering {
 		}
 
 		// クラスタリング
-		 List<List<Integer>> clusters = hierarchicalClustering(simMatrix);//最短距離法
-		//List<List<Integer>> clusters = centralClustering(simMatrix, parray);// 重心法
+		List<List<Integer>> clusters = hierarchicalClustering(simMatrix);// 最短距離法
+		// List<List<Integer>> clusters = centralClustering(simMatrix, parray);// 重心法
 		// List<List<Integer>> clusters = kmeansClustering(simMatrix, count,
 		// parray);//kmeans法
+		// List<List<Integer>> clusters = WardMethodClustering(simMatrix);//ウォード法
 		return clusters.get(0);
 	}
 
@@ -214,6 +215,142 @@ public class HierarchicalClustering {
 
 	// このメソッド内の simMatrix を simCentroidMatrix に変更
 	private static double computeCentroidClusterDistance(int i, int j, List<List<Double>> simCentroidMatrix) {
+		System.out.print("i:" + i + "j:" + j + "simCentroidMatrix.get(i).get(j)" + simCentroidMatrix.get(i).get(j));
+		double min = Double.MIN_VALUE;
+		if (simCentroidMatrix.get(i).get(j) > min) {
+			min = simCentroidMatrix.get(i).get(j);
+		}
+		return min;
+	}
+
+	// ウォード法
+	private static List<List<Integer>> WardMethodClustering(double[][] simMatrix, int count, DimensionPair[] parray) {
+		int n = simMatrix.length;
+
+		List<List<Double>> simCentroidMatrix = new ArrayList<>();
+		List<List<Double>> simWordMatrix = new ArrayList<>();
+
+		for (int i = 0; i < n; i++) {
+			List<Double> foo = new ArrayList<>();
+			for (int j = 0; j < n; j++) {
+				foo.add(simMatrix[i][j]);
+			}
+			simCentroidMatrix.add(foo);
+			simWordMatrix.add(foo);
+		}
+
+		// 初期クラスタ：各要素を1つのクラスタとする
+		clusters = new ArrayList<>();
+		for (int i = 0; i < n; i++) {
+			List<Integer> cluster = new ArrayList<>();
+			cluster.add(i);
+			clusters.add(cluster);
+		}
+		// クラスタ数がNUMCLUSTERになるまでマージを繰り返す
+		while (clusters.size() > NUMCLUSTER) {
+			// 最も類似度が高い2つのクラスタをマージする
+			int minI = 0, minJ = 1;
+			double minDist = Double.MIN_VALUE;
+
+			for (int i = 0; i < clusters.size(); i++) {
+				for (int j = i + 1; j < clusters.size(); j++) {
+					double dist = computeWordClusterDistance(i, j, simWordMatrix);
+					if (dist > minDist) {
+						minI = i;
+						minJ = j;
+						minDist = dist;
+					}
+				}
+			}
+			System.out.println("");
+			System.out.println("mini:" + minI + "minj" + minJ);
+
+			// マージした新しいクラスタを作成し、既存のクラスタから削除する
+			List<Integer> mergedCluster = new ArrayList<>();
+			List<Integer> minIcluster = clusters.get(minI);
+			List<Integer> minJcluster = clusters.get(minI);
+			mergedCluster.addAll(clusters.get(minI));
+			mergedCluster.addAll(clusters.get(minJ));
+
+			if (minJ < minI) {
+				clusters.remove(minI);
+				clusters.remove(minJ);
+			} else {
+				clusters.remove(minJ);
+				clusters.remove(minI);
+			}
+			clusters.add(mergedCluster);
+
+			UpdateWordSimmatrix(simWordMatrix, simCentroidMatrix, minIcluster, minJcluster, minI, minJ);
+			simCentroidMatrix = simWordMatrix;
+			System.out.println("count" + clusters.size());
+
+			ArrayList<ArrayList<Double>> clusters_num = new ArrayList<>();
+
+			System.out.println("");
+		}
+
+		return clusters;
+	}
+
+	// このメソッド内の clusters を clusters_num に変更
+	private static void UpdateWordSimmatrix(List<List<Double>> simWordMatrix, List<List<Double>> simCentroidMatrix,
+			List<Integer> minIcluster, List<Integer> minJcluster, int minI, int minJ) {
+
+		System.out.println("");
+		System.out.println("clusters.size()" + clusters.size());
+		simWordMatrix.clear();
+		for (int i = 0; i < clusters.size(); i++) {
+			List<Double> sim_cp = new ArrayList<>();
+			for (int j = 0; j < clusters.size(); j++) {
+				double len1 = 0.0, len2 = 0.0, inner = 0.0;
+				if (i >= j) {
+					inner = 0.0;
+				} else if (j == clusters.size() - 1) {
+					double A = 0, B = 0.0, C = 0.0;
+					if (minI < i) {
+						A = (minIcluster.size() / clusters.get(j).size())
+								* Math.pow((simCentroidMatrix.get(i + 1).get(minI)), 2);
+					} else {
+						A = (minIcluster.size() / clusters.get(j).size())
+								* Math.pow((simCentroidMatrix.get(i).get(minI)), 2);
+					}
+					if (minJ < i) {
+						B = (minJcluster.size() / clusters.get(j).size())
+								* Math.pow((simCentroidMatrix.get(i + 1).get(minJ)), 2);
+					} else {
+						B = (minJcluster.size() / clusters.get(j).size())
+								* Math.pow((simCentroidMatrix.get(minI).get(minJ)), 2);
+					}
+
+					C = (clusters.get(i).size() / clusters.get(j).size())
+							* Math.pow((simCentroidMatrix.get(i + 1).get(j)), 2);
+					inner = Math.sqrt(A + B - C);
+				} else {
+					int add_i_num = 0;
+					int add_j_num = 0;
+					if (minI < i) {
+						add_i_num++;
+					} else if (minJ < i) {
+						add_i_num++;
+					}
+					if (minI < j) {
+						add_j_num++;
+					} else if (minJ < j) {
+						add_j_num++;
+					}
+					inner = simCentroidMatrix.get(i + add_i_num).get(j + add_j_num);
+
+				}
+				sim_cp.add(inner);
+			}
+			simWordMatrix.add(sim_cp);
+			System.out.print("i:" + i + "simCentroidMatrix.get(i).get(j)" + sim_cp);
+		}
+	}
+
+	// このメソッド内の simMatrix を simCentroidMatrix に変更
+	private static double computeWordClusterDistance(int i, int j, List<List<Double>> simCentroidMatrix) {
 		System.out.print("i:" + i + "j:" + j + "simCentroidMatrix.get(i).get(j)" + simCentroidMatrix.get(i).get(j));
 		double min = Double.MIN_VALUE;
 		if (simCentroidMatrix.get(i).get(j) > min) {
