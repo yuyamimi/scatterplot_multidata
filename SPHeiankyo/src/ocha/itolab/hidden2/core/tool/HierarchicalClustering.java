@@ -35,11 +35,11 @@ public class HierarchicalClustering {
 		}
 
 		// クラスタリング
-		List<List<Integer>> clusters = hierarchicalClustering(simMatrix);// 最短距離法
+		// List<List<Integer>> clusters = hierarchicalClustering(simMatrix);// 最短距離法
 		// List<List<Integer>> clusters = centralClustering(simMatrix, parray);// 重心法
 		// List<List<Integer>> clusters = kmeansClustering(simMatrix, count,
 		// parray);//kmeans法
-		// List<List<Integer>> clusters = WardMethodClustering(simMatrix);//ウォード法
+		List<List<Integer>> clusters = WardMethodClustering(simMatrix, count, parray);// ウォード法
 		return clusters.get(0);
 	}
 
@@ -246,6 +246,7 @@ public class HierarchicalClustering {
 			cluster.add(i);
 			clusters.add(cluster);
 		}
+		
 		// クラスタ数がNUMCLUSTERになるまでマージを繰り返す
 		while (clusters.size() > NUMCLUSTER) {
 			// 最も類似度が高い2つのクラスタをマージする
@@ -281,13 +282,18 @@ public class HierarchicalClustering {
 			}
 			clusters.add(mergedCluster);
 
+			System.out.println();
+			System.out.println("here"+simCentroidMatrix.get(0).get(1));
 			UpdateWordSimmatrix(simWordMatrix, simCentroidMatrix, minIcluster, minJcluster, minI, minJ);
-			simCentroidMatrix = simWordMatrix;
-			System.out.println("count" + clusters.size());
-
-			ArrayList<ArrayList<Double>> clusters_num = new ArrayList<>();
-
+			simCentroidMatrix.clear();
+			for (List<Double> row : simWordMatrix) {
+			    List<Double> newRow = new ArrayList<>(row);
+			    simCentroidMatrix.add(newRow);
+			}
 			System.out.println("");
+			System.out.print(simCentroidMatrix.get(0).get(1));
+
+			
 		}
 
 		return clusters;
@@ -300,6 +306,7 @@ public class HierarchicalClustering {
 		System.out.println("");
 		System.out.println("clusters.size()" + clusters.size());
 		simWordMatrix.clear();
+
 		for (int i = 0; i < clusters.size(); i++) {
 			List<Double> sim_cp = new ArrayList<>();
 			for (int j = 0; j < clusters.size(); j++) {
@@ -329,16 +336,21 @@ public class HierarchicalClustering {
 				} else {
 					int add_i_num = 0;
 					int add_j_num = 0;
-					if (minI < i) {
+					if (minI <= i) {
 						add_i_num++;
-					} else if (minJ < i) {
+					} else if (minJ <= i) {
 						add_i_num++;
 					}
-					if (minI < j) {
+					if (minI <= j) {
 						add_j_num++;
-					} else if (minJ < j) {
+					} else if (minJ <= j) {
 						add_j_num++;
 					}
+					System.out.println();
+					System.out.println("i:" + i + "j:" + j + "minI:" + minI + "minJ:" + minJ + "add_i_num:" + add_i_num
+							+ "add_j_num" + add_j_num);
+					System.out.println();
+					System.out.println("here"+simCentroidMatrix.get(0).get(1));
 					inner = simCentroidMatrix.get(i + add_i_num).get(j + add_j_num);
 
 				}
