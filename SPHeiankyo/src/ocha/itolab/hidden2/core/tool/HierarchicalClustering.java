@@ -33,11 +33,13 @@ public class HierarchicalClustering {
 		}
 
 		// クラスタリング
-		// List<List<Integer>> clusters = hierarchicalClustering(simMatrix);// 最短距離法
-		// List<List<Integer>> clusters = centralClustering(simMatrix, parray);// 重心法
+		 //List<List<Integer>> clusters = hierarchicalClustering(simMatrix);// 最短距離法
+		  //List<List<Integer>> clusters = centralClustering(simMatrix, parray);// 重心法
 		// List<List<Integer>> clusters = kmeansClustering(simMatrix, count,
 		// parray);//kmeans法
+		
 		List<List<Integer>> clusters = WardMethodClustering(simMatrix, count, parray);// ウォード法
+		
 		return clusters.get(0);
 	}
 
@@ -247,8 +249,9 @@ public class HierarchicalClustering {
 
 		// クラスタ数がNUMCLUSTERになるまでマージを繰り返す
 		while (clusters.size() > NUMCLUSTER) {
+			System.out.println("SIZEEE" + clusters.size() + "uooooo" + NUMCLUSTER);
 			// 最も類似度が高い2つのクラスタをマージする
-			int minI = 0, minJ = 1;
+			int minI = 0, minJ = 0;
 			double minDist = Double.MAX_VALUE;
 
 			for (int i = 0; i < clusters.size(); i++) {
@@ -265,8 +268,14 @@ public class HierarchicalClustering {
 
 			// マージした新しいクラスタを作成し、既存のクラスタから削除する
 			List<Integer> mergedCluster = new ArrayList<>();
-			List<Integer> minIcluster = clusters.get(minI);
-			List<Integer> minJcluster = clusters.get(minJ);
+			List<Integer> minIcluster = new ArrayList<>();
+			List<Integer> minJcluster = new ArrayList<>();
+			for (int row : clusters.get(minI)) {
+				minIcluster.add(row);
+			}
+			for (int row : clusters.get(minJ)) {
+				minIcluster.add(row);
+			}
 			mergedCluster.addAll(clusters.get(minI));
 			mergedCluster.addAll(clusters.get(minJ));
 
@@ -280,13 +289,16 @@ public class HierarchicalClustering {
 			clusters.add(mergedCluster);
 
 			UpdateWordSimmatrix(simWord_update, simWord_origin, minIcluster, minJcluster, minI, minJ);
+			
 			simWord_origin.clear();
 			for (List<Double> row : simWord_update) {
 				List<Double> newRow = new ArrayList<>(row);
 				simWord_origin.add(newRow);
 			}
 		}
-
+		
+		System.out.println();
+		System.out.println("clucters" + clusters);
 		return clusters;
 	}
 
@@ -314,7 +326,6 @@ public class HierarchicalClustering {
 						count_diff++;
 					}
 					double A = 0, B = 0.0, C = 0.0;
-					System.out.println("i + count_diff" + (i + count_diff));
 					if (minI < i + count_diff) {
 						A = (((double) minIcluster.size() + (double) clusters.get(j).size())
 								/ (double) clusters.get(j).size())
