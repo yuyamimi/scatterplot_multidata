@@ -299,6 +299,10 @@ public class HierarchicalClustering {
 		
 		System.out.println();
 		System.out.println("clucters" + clusters);
+		for(int i = 0;i < clusters.size();i++) {
+			for(int j = 0;j < clusters.get(i).size();j++)
+		System.out.println("clusternum:" +clusters.get(i).get(j)+ "parray id:" + parray[clusters.get(i).get(j)].id);
+		}
 		return clusters;
 	}
 

@@ -5,6 +5,7 @@ import java.util.*;
 
 public class DimensionDistanceCombination {
 	static DimensionPair[] parray = null;
+	static DimensionPair[] parray_ob = null;
 	static int nparray;
 	static IndividualSet iset;
 	static int NUMDIST = 4;
@@ -18,6 +19,7 @@ public class DimensionDistanceCombination {
 		scorearray = new double[is.getNumExplain() * is.getNumObjective()][NUMDIST];
 		nscorearray = new double[is.getNumExplain() * is.getNumObjective()][NUMDIST];
 		parray = new DimensionPair[scorearray.length];
+		parray_ob = new DimensionPair[scorearray.length];
 
 		// Calculate scores
 		for (int i = 0, count = 0; i < is.getNumExplain(); i++) {
@@ -63,16 +65,15 @@ public class DimensionDistanceCombination {
 
 	public static void callHierarchicalClustering() {
 		List<Integer> array_sim;
-		DimensionPair[] parray_ob = new DimensionPair[scorearray.length];
 
-		for (int j = 0; j < nparray; j++) {
-			parray_ob[j] = parray[j];
-		}
 		array_sim = HierarchicalClustering.HCmain(parray, nparray);
+		System.out.println("");
+		/*
 		for (int j = 0; j < array_sim.size(); j++) {
 			System.out.print(array_sim.get(j) + " ");
 			parray[j] = parray_ob[array_sim.get(j)];
 		}
+		*/
 		System.out.println("here");
 	}
 
@@ -162,7 +163,7 @@ public class DimensionDistanceCombination {
 			// if need to assign the new color ID
 			if (v.colorId < 0) {
 				v.colorId = numcolor;
-				//numcolor++;
+				// numcolor++;
 			}
 
 			// if the queue is empty
@@ -208,16 +209,20 @@ public class DimensionDistanceCombination {
 				if (p2.r < p.r)
 					break;
 			}
-			for (int k = nparray; k > j; k--)
+			for (int k = nparray; k > j; k--) {
 				parray[k] = parray[k - 1];
-
+				parray_ob[k] = parray_ob[k - 1];
+			}
 			parray[j] = p;
+			parray_ob[j] = p;
 			nparray++;
 
 		}
 
-		for (int i = nparray; i < scorearray.length; i++)
+		for (int i = nparray; i < scorearray.length; i++) {
 			parray[i] = null;
+			parray_ob[i] = null;
+		}
 		for (int i = 0; i < nparray; i++) {
 			DimensionPair p = parray[i];
 			if (p == null)
