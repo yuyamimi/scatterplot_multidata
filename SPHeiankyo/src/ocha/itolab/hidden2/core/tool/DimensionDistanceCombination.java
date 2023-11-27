@@ -25,9 +25,9 @@ public class DimensionDistanceCombination {
 		for (int i = 0, count = 0; i < is.getNumExplain(); i++) {
 			for (int j = 0; j < is.getNumObjective(); j++, count++) {
 				scorearray[count][0] = DimensionDistanceCorrelation.calcCorrelationOnePair(iset, i, j);
-				scorearray[count][1] = DimensionDistanceEntropy.calcEntropyOnePair(iset, i, j);
-				scorearray[count][2] = DimensionDistanceSkinny.calcSkinnyOnePair(iset, i, j);
-				scorearray[count][3] = DimensionDistanceClumpy.calcClumpyOnePair(iset, i, j);
+				scorearray[count][1] = DimensionDistanceEntropy.calcEntropyOnePair(iset, i, j)*2 ;
+				scorearray[count][2] = DimensionDistanceSkinny.calcSkinnyOnePair(iset, i, j)*2;
+				scorearray[count][3] = DimensionDistanceClumpy.calcClumpyOnePair(iset, i, j)*2;
 			}
 		}
 
@@ -69,11 +69,10 @@ public class DimensionDistanceCombination {
 		array_sim = HierarchicalClustering.HCmain(parray, nparray);
 		System.out.println("");
 		/*
-		for (int j = 0; j < array_sim.size(); j++) {
-			System.out.print(array_sim.get(j) + " ");
-			parray[j] = parray_ob[array_sim.get(j)];
-		}
-		*/
+		 * for (int j = 0; j < array_sim.size(); j++) {
+		 * System.out.print(array_sim.get(j) + " "); parray[j] =
+		 * parray_ob[array_sim.get(j)]; }
+		 */
 		System.out.println("here");
 	}
 
@@ -163,7 +162,7 @@ public class DimensionDistanceCombination {
 			// if need to assign the new color ID
 			if (v.colorId < 0) {
 				v.colorId = numcolor;
-				// numcolor++;
+				//numcolor++;
 			}
 
 			// if the queue is empty

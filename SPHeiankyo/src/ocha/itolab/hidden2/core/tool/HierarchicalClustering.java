@@ -10,11 +10,12 @@ public class HierarchicalClustering {
 
 	public static int NUMCLUSTER = 1;
 	public static List<List<Integer>> clusters;
+	public static int count_i = 0;
 
 	public static List<Integer> HCmain(DimensionPair[] parray, int count) {
 		// int count = parray.length;
 		double[][] simMatrix = new double[count][count];
-		System.out.println("count" + count);
+		// System.out.println("count" + count);
 		for (int i = 0; i < count; i++) {
 			for (int j = (i + 1); j < count; j++) {
 				// calculate cosine
@@ -33,16 +34,59 @@ public class HierarchicalClustering {
 		}
 
 		// クラスタリング
-		 //List<List<Integer>> clusters = hierarchicalClustering(simMatrix);// 最短距離法
-		  //List<List<Integer>> clusters = centralClustering(simMatrix, parray);// 重心法
+		// List<List<Integer>> clusters = hierarchicalClustering(simMatrix);// 最短距離法
+		// List<List<Integer>> clusters = centralClustering(simMatrix, parray);// 重心法
 		// List<List<Integer>> clusters = kmeansClustering(simMatrix, count,
 		// parray);//kmeans法
-		
-		List<List<Integer>> clusters = WardMethodClustering(simMatrix, count, parray);// ウォード法
-		
-		return clusters.get(0);
-	}
 
+		List<List<Integer>> clusters = WardMethodClustering(simMatrix, count,parray);// ウォード法
+		//List<List<Integer>> clusters = normal(count);// ウォード法
+	
+		System.out.println();
+		System.out.println("clucters" + clusters);
+		return clusters.get(0);
+
+	}
+	private static List<List<Integer>> normal(int count) {
+		clusters = new ArrayList<>();
+		List<Integer> mergeddcluster = new ArrayList<>();
+		for (int i = 0; i < count; i++) {
+			List<Integer> cluster = new ArrayList<>();
+			cluster.add(i);
+			clusters.add(cluster);
+		}
+		while (clusters.size() > NUMCLUSTER) {
+			
+			int minI = 0, minJ = 1;
+			double minDist = Double.MAX_VALUE;
+
+			// マージした新しいクラスタを作成し、既存のクラスタから削除する
+			List<Integer> mergedCluster = new ArrayList<>();
+			List<Integer> minIcluster = new ArrayList<>();
+			List<Integer> minJcluster = new ArrayList<>();
+			for (int row : clusters.get(minI)) {
+				minIcluster.add(row);
+			}
+			for (int row : clusters.get(minJ)) {
+				minJcluster.add(row);
+			}
+			mergedCluster.addAll(clusters.get(minI));
+			mergedCluster.addAll(clusters.get(minJ));
+
+			if (minJ < minI) {
+				clusters.remove(minI);
+				clusters.remove(minJ);
+			} else {
+				clusters.remove(minJ);
+				clusters.remove(minI);
+			}
+			clusters.add(mergedCluster);
+		}
+		System.out.println();
+		System.out.println("clucters" + clusters);
+		return clusters;
+}
+	
 	// 階層的クラスタリングを実行するメソッド(最短距離法)
 	private static List<List<Integer>> hierarchicalClustering(double[][] simMatrix) {
 		int n = simMatrix.length;
@@ -162,7 +206,7 @@ public class HierarchicalClustering {
 			ArrayList<ArrayList<Double>> clusters_num = new ArrayList<>();
 			ComputeCentroidDistance(parray, clusters_num);
 			UpdateSimmatrix(parray, clusters_num, simCentroidMatrix);
-			System.out.println("");
+			// System.out.println("");
 		}
 
 		return clusters;
@@ -175,14 +219,14 @@ public class HierarchicalClustering {
 			for (int l = 0; l < NUMDIST; l++) {
 				double sum = 0.0;
 				for (int j : cluster) {
-					System.out.println("j" + j);
+					// System.out.println("j" + j);
 					sum += parray[j].score[l];
 				}
 				sum /= cluster.size();
 				cluster_num.add(sum);
 			}
 			clusters_num.add(cluster_num); // 重心をクラスタのリストに追加
-			System.out.println("after!!" + cluster_num);
+			// System.out.println("after!!" + cluster_num);
 		}
 	}
 
@@ -209,13 +253,14 @@ public class HierarchicalClustering {
 				sim_cp.add(inner);
 			}
 			simCentroidMatrix.add(sim_cp);
-			System.out.print("i:" + i + "simCentroidMatrix.get(i).get(j)" + sim_cp);
+			// System.out.print("i:" + i + "simCentroidMatrix.get(i).get(j)" + sim_cp);
 		}
 	}
 
 	// このメソッド内の simMatrix を simCentroidMatrix に変更
 	private static double computeCentroidClusterDistance(int i, int j, List<List<Double>> simCentroidMatrix) {
-		System.out.print("i:" + i + "j:" + j + "simCentroidMatrix.get(i).get(j)" + simCentroidMatrix.get(i).get(j));
+		// System.out.print("i:" + i + "j:" + j + "simCentroidMatrix.get(i).get(j)" +
+		// simCentroidMatrix.get(i).get(j));
 		double min = Double.MIN_VALUE;
 		if (simCentroidMatrix.get(i).get(j) > min) {
 			min = simCentroidMatrix.get(i).get(j);
@@ -235,6 +280,7 @@ public class HierarchicalClustering {
 			for (int j = 0; j < n; j++) {
 				foo.add(1.0 - simMatrix[i][j]);
 			}
+			System.out.println("i;" + i + "foo:" + foo);
 			simWord_origin.add(foo);
 			simWord_update.add(foo);
 		}
@@ -249,7 +295,7 @@ public class HierarchicalClustering {
 
 		// クラスタ数がNUMCLUSTERになるまでマージを繰り返す
 		while (clusters.size() > NUMCLUSTER) {
-			System.out.println("SIZEEE" + clusters.size() + "uooooo" + NUMCLUSTER);
+			// System.out.println("SIZEEE" + clusters.size() + "uooooo" + NUMCLUSTER);
 			// 最も類似度が高い2つのクラスタをマージする
 			int minI = 0, minJ = 0;
 			double minDist = Double.MAX_VALUE;
@@ -260,6 +306,8 @@ public class HierarchicalClustering {
 						minI = i;
 						minJ = j;
 						minDist = simWord_origin.get(i).get(j);
+
+						System.out.println("i:" + i + "j:" + j + "minDist:" + minDist);
 					}
 				}
 			}
@@ -274,7 +322,7 @@ public class HierarchicalClustering {
 				minIcluster.add(row);
 			}
 			for (int row : clusters.get(minJ)) {
-				minIcluster.add(row);
+				minJcluster.add(row);
 			}
 			mergedCluster.addAll(clusters.get(minI));
 			mergedCluster.addAll(clusters.get(minJ));
@@ -289,20 +337,21 @@ public class HierarchicalClustering {
 			clusters.add(mergedCluster);
 
 			UpdateWordSimmatrix(simWord_update, simWord_origin, minIcluster, minJcluster, minI, minJ);
-			
+
 			simWord_origin.clear();
 			for (List<Double> row : simWord_update) {
 				List<Double> newRow = new ArrayList<>(row);
 				simWord_origin.add(newRow);
 			}
 		}
-		
-		System.out.println();
-		System.out.println("clucters" + clusters);
-		for(int i = 0;i < clusters.size();i++) {
-			for(int j = 0;j < clusters.get(i).size();j++)
-		System.out.println("clusternum:" +clusters.get(i).get(j)+ "parray id:" + parray[clusters.get(i).get(j)].id);
-		}
+
+		// System.out.println();
+		// System.out.println("clucters" + clusters);
+		/*
+		 * for(int i = 0;i < clusters.size();i++) { for(int j = 0;j <
+		 * clusters.get(i).size();j++) System.out.println("clusternum:"
+		 * +clusters.get(i).get(j)+ "parray id:" + parray[clusters.get(i).get(j)].id); }
+		 */
 		return clusters;
 	}
 
@@ -310,8 +359,8 @@ public class HierarchicalClustering {
 	private static void UpdateWordSimmatrix(List<List<Double>> simWord_update, List<List<Double>> simWord_origin,
 			List<Integer> minIcluster, List<Integer> minJcluster, int minI, int minJ) {
 
-		System.out.println("");
-		System.out.println("clusters.size()" + clusters.size());
+		// System.out.println("");
+		// System.out.println("clusters.size()" + clusters.size());
 
 		simWord_update.clear();
 
@@ -320,37 +369,54 @@ public class HierarchicalClustering {
 			for (int j = 0; j < clusters.size(); j++) {
 				double len1 = 0.0, len2 = 0.0, inner = 0.0;
 				if (j <= i) {
-					inner = 0.0;
+					inner = 1.0;
 				} else if (j == clusters.size() - 1) {
 					int count_diff = 0;
-					if (minI <= i + count_diff) {
+					if (minI <= i) {
 						count_diff++;
 					}
-					if (minJ <= i + count_diff) {
+					if (minJ <= i) {
 						count_diff++;
 					}
 					double A = 0, B = 0.0, C = 0.0;
 					if (minI < i + count_diff) {
-						A = (((double) minIcluster.size() + (double) clusters.get(j).size())
-								/ (double) clusters.get(j).size())
+						A = (((double) minIcluster.size() + (double) clusters.get(i).size())
+								/ ((double) clusters.get(j).size() + (double) clusters.get(i).size()))
 								* Math.pow((simWord_origin.get(minI).get(i + count_diff)), 2);
+						/*
+						 * System.out.print(" A:" + ((double) minIcluster.size() + (double)
+						 * clusters.get(i).size()) / ((double) clusters.get(j).size() + (double)
+						 * clusters.get(i).size()));
+						 */
 
 					} else {
-						A = (((double) minIcluster.size() + (double) clusters.get(j).size())
-								/ (double) clusters.get(j).size())
+						A = (((double) minIcluster.size() + (double) clusters.get(i).size())
+								/ ((double) clusters.get(j).size() + (double) clusters.get(i).size()))
 								* Math.pow((simWord_origin.get(i + count_diff).get(minI)), 2);
+						// System.out.print(" A:" + ((double) minIcluster.size() + (double)
+						// clusters.get(i).size())
+						// / ((double) clusters.get(j).size() + (double) clusters.get(i).size()));
 					}
 					if (minJ < i + count_diff) {
-						B = (((double) minJcluster.size() + (double) clusters.get(j).size())
-								/ (double) clusters.get(j).size())
+						B = (((double) minJcluster.size() + (double) clusters.get(i).size())
+								/ ((double) clusters.get(j).size() + (double) clusters.get(i).size()))
 								* Math.pow((simWord_origin.get(minJ).get(i + count_diff)), 2);
+						// System.out.print(" B:" + ((double) minJcluster.size() + (double)
+						// clusters.get(i).size())
+						// / ((double) clusters.get(j).size() + (double) clusters.get(i).size()));
 					} else {
-						B = (((double) minJcluster.size() + (double) clusters.get(j).size())
-								/ (double) clusters.get(j).size())
+						B = (((double) minJcluster.size() + (double) clusters.get(i).size())
+								/ ((double) clusters.get(j).size() + (double) clusters.get(i).size()))
 								* Math.pow((simWord_origin.get(i + count_diff).get(minJ)), 2);
+						// System.out.print(" B:" + ((double) minJcluster.size() + (double)
+						// clusters.get(i).size())
+						// / ((double) clusters.get(j).size() + (double) clusters.get(i).size()));
 					}
-					C = ((double) clusters.get(i).size() / (double) clusters.get(j).size())
+					C = ((double) clusters.get(i).size()
+							/ ((double) clusters.get(j).size() + (double) clusters.get(i).size()))
 							* Math.pow((simWord_origin.get(minI).get(minJ)), 2);
+					// System.out.print(" C:" + ((double) clusters.get(i).size()
+					// / ((double) clusters.get(j).size() + (double) clusters.get(i).size())));
 
 					inner = Math.sqrt(A + B - C);
 					// inner = A + B - C;
@@ -361,13 +427,14 @@ public class HierarchicalClustering {
 					if (minI <= i) {
 						add_i_num++;
 					}
-					if (minJ <= i) {
-						add_i_num++;
-					}
 					if (minI <= j) {
 						add_j_num++;
 					}
-					if (minJ <= j) {
+					if (minJ  <= i+ add_i_num) {
+						add_i_num++;
+					}
+
+					if (minJ  <= j+ add_j_num) {
 						add_j_num++;
 					}
 					inner = simWord_origin.get(i + add_i_num).get(j + add_j_num);
@@ -376,9 +443,11 @@ public class HierarchicalClustering {
 				sim_cp.add(inner);
 			}
 			simWord_update.add(sim_cp);
+			if (count_i <= 1)
+				System.out.println("i:" + i + "sim_cp:" + sim_cp);
 		}
+		count_i++;
 
-		System.out.print("simCentroidMatrix.get(i).get(j)" + simWord_update);
 	}
 	/*
 	 * // このメソッド内の simMatrix を simCentroidMatrix に変更 private static double
