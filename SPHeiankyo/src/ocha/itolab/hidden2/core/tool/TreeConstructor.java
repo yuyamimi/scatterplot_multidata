@@ -34,6 +34,7 @@ public class TreeConstructor {
 		// for each selected scatterplot
 		for(int i = 0; i < list.size(); i++) {
 			int[] sp = list.get(i);
+			System.out.println("sp[2]"+sp[2]);
 			
 			// matching with clustering result
 			int clusterId = -1;

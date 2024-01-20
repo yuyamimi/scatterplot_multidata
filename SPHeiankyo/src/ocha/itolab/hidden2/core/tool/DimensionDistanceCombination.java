@@ -5,13 +5,12 @@ import java.util.*;
 
 public class DimensionDistanceCombination {
 	static DimensionPair[] parray = null;
-	static DimensionPair[] parray_ob = null;
-	static int nparray;
 	static IndividualSet iset;
 	static int NUMDIST = 4;
 	static double scorearray[][];
 	static double nscorearray[][];
 	static double inner_array[][];
+	static int nparray  = 0;
 
 	public static DimensionPair[] calc(IndividualSet is) {
 		iset = is;
@@ -19,15 +18,14 @@ public class DimensionDistanceCombination {
 		scorearray = new double[is.getNumExplain() * is.getNumObjective()][NUMDIST];
 		nscorearray = new double[is.getNumExplain() * is.getNumObjective()][NUMDIST];
 		parray = new DimensionPair[scorearray.length];
-		parray_ob = new DimensionPair[scorearray.length];
 
 		// Calculate scores
 		for (int i = 0, count = 0; i < is.getNumExplain(); i++) {
 			for (int j = 0; j < is.getNumObjective(); j++, count++) {
 				scorearray[count][0] = DimensionDistanceCorrelation.calcCorrelationOnePair(iset, i, j);
-				scorearray[count][1] = DimensionDistanceEntropy.calcEntropyOnePair(iset, i, j)*2 ;
-				scorearray[count][2] = DimensionDistanceSkinny.calcSkinnyOnePair(iset, i, j)*2;
-				scorearray[count][3] = DimensionDistanceClumpy.calcClumpyOnePair(iset, i, j)*2;
+				scorearray[count][1] = DimensionDistanceEntropy.calcEntropyOnePair(iset, i, j);
+				scorearray[count][2] = DimensionDistanceSkinny.calcSkinnyOnePair(iset, i, j);
+				scorearray[count][3] = DimensionDistanceClumpy.calcClumpyOnePair(iset, i, j);
 			}
 		}
 
@@ -62,7 +60,7 @@ public class DimensionDistanceCombination {
 		// MAX_AREA = 0.5 + 0.5 * d;
 		MAX_AREA = d;
 	}
-
+	
 	public static void callHierarchicalClustering() {
 		List<Integer> array_sim;
 
@@ -73,7 +71,7 @@ public class DimensionDistanceCombination {
 		 * System.out.print(array_sim.get(j) + " "); parray[j] =
 		 * parray_ob[array_sim.get(j)]; }
 		 */
-		System.out.println("here");
+		
 	}
 
 	/**
@@ -162,7 +160,7 @@ public class DimensionDistanceCombination {
 			// if need to assign the new color ID
 			if (v.colorId < 0) {
 				v.colorId = numcolor;
-				//numcolor++;
+				numcolor++;
 			}
 
 			// if the queue is empty
@@ -208,21 +206,18 @@ public class DimensionDistanceCombination {
 				if (p2.r < p.r)
 					break;
 			}
-			for (int k = nparray; k > j; k--) {
+			for (int k = nparray; k > j; k--)
 				parray[k] = parray[k - 1];
-				parray_ob[k] = parray_ob[k - 1];
-			}
+
 			parray[j] = p;
-			parray_ob[j] = p;
 			nparray++;
 
 		}
 
-		for (int i = nparray; i < scorearray.length; i++) {
+		for (int i = nparray; i < scorearray.length; i++)
 			parray[i] = null;
-			parray_ob[i] = null;
-		}
 		for (int i = 0; i < nparray; i++) {
+			// for(int i = 0; i < 12; i++) {
 			DimensionPair p = parray[i];
 			if (p == null)
 				continue;
@@ -232,11 +227,27 @@ public class DimensionDistanceCombination {
 		}
 		double minarea = calcMinArea(nparray);
 		// double minarea = calcMinArea(12);
-		// System.out.println(" parameter=" + MAX_AREA + " numcolor=" + numcolor + "
-		// numedge=" + numedge + " nums=" + nparray + " minarea=" + minarea);
+		System.out.println("   parameter=" + MAX_AREA + " numcolor=" + numcolor + " numedge=" + numedge + " nums="
+				+ nparray + " minarea=" + minarea);
+
+		List<Integer> array_sim;
+		DimensionPair[] parray_ob = null;
+		parray_ob = new DimensionPair[scorearray.length];
+
+		for (int j = 0; j < nparray; j++) {
+			parray_ob[j] = parray[j];
+		}
+		
 
 		// 階層クラスタリング
 		callHierarchicalClustering();
+		
+		/*
+		 * HierarchicalClustering HC = new HierarchicalClustering(); // 階層クラスタリング
+		 * array_sim = HC.HCmain(parray,count); System.out.println(array_sim); for (int
+		 * j = 0; j < array_sim.size(); j++) { parray[j] = parray_ob[array_sim.get(j)];
+		 * }
+		 */
 
 		// temporal
 		/*

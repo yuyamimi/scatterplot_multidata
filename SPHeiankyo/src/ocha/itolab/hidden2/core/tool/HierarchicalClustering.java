@@ -17,7 +17,7 @@ public class HierarchicalClustering {
 		double[][] simMatrix = new double[count][count];
 		// System.out.println("count" + count);
 		for (int i = 0; i < count; i++) {
-			for (int j = (i + 1); j < count; j++) {
+			for (int j = 0; j < count; j++) {
 				// calculate cosine
 				double len1 = 0.0, len2 = 0.0, inner = 0.0;
 				for (int k = 0; k < NUMDIST; k++) {
@@ -27,6 +27,7 @@ public class HierarchicalClustering {
 					// System.out.print("before!!" + parray[i].score[k]);
 				}
 				inner /= (Math.sqrt(len1) * Math.sqrt(len2));
+				if(i==j)inner = 0;
 				simMatrix[i][j] = inner;
 				// System.out.print("i:" + i + "j:" + j + "inner" + inner + " ");
 			}
@@ -34,19 +35,20 @@ public class HierarchicalClustering {
 		}
 
 		// クラスタリング
-		// List<List<Integer>> clusters = hierarchicalClustering(simMatrix);// 最短距離法
-		// List<List<Integer>> clusters = centralClustering(simMatrix, parray);// 重心法
+		//List<List<Integer>> clusters = hierarchicalClustering(simMatrix);// 最短距離法
+		//List<List<Integer>> clusters = centralClustering(simMatrix, parray);// 重心法
 		// List<List<Integer>> clusters = kmeansClustering(simMatrix, count,
 		// parray);//kmeans法
 
+		
 		List<List<Integer>> clusters = WardMethodClustering(simMatrix, count,parray);// ウォード法
 		//List<List<Integer>> clusters = normal(count);// ウォード法
 	
 		System.out.println();
 		System.out.println("clucters" + clusters);
 		return clusters.get(0);
-
 	}
+	
 	private static List<List<Integer>> normal(int count) {
 		clusters = new ArrayList<>();
 		List<Integer> mergeddcluster = new ArrayList<>();
@@ -84,8 +86,9 @@ public class HierarchicalClustering {
 		}
 		System.out.println();
 		System.out.println("clucters" + clusters);
+	
 		return clusters;
-}
+	}
 	
 	// 階層的クラスタリングを実行するメソッド(最短距離法)
 	private static List<List<Integer>> hierarchicalClustering(double[][] simMatrix) {
@@ -131,6 +134,7 @@ public class HierarchicalClustering {
 				clusters.remove(minI);
 			}
 			clusters.add(mergedCluster);
+			
 		}
 
 		return clusters;
@@ -201,7 +205,7 @@ public class HierarchicalClustering {
 				clusters.remove(minI);
 			}
 			clusters.add(mergedCluster);
-			System.out.println("count" + clusters.size());
+			//System.out.println("count" + clusters.size());
 
 			ArrayList<ArrayList<Double>> clusters_num = new ArrayList<>();
 			ComputeCentroidDistance(parray, clusters_num);
@@ -276,11 +280,12 @@ public class HierarchicalClustering {
 		List<List<Double>> simWord_update = new ArrayList<>();
 
 		for (int i = 0; i < n; i++) {
+
 			List<Double> foo = new ArrayList<>();
 			for (int j = 0; j < n; j++) {
 				foo.add(1.0 - simMatrix[i][j]);
 			}
-			System.out.println("i;" + i + "foo:" + foo);
+			System.out.print(foo);
 			simWord_origin.add(foo);
 			simWord_update.add(foo);
 		}
@@ -301,13 +306,12 @@ public class HierarchicalClustering {
 			double minDist = Double.MAX_VALUE;
 
 			for (int i = 0; i < clusters.size(); i++) {
+				System.out.print(clusters.get(i) + " ");
 				for (int j = i + 1; j < clusters.size(); j++) {
 					if (simWord_origin.get(i).get(j) < minDist) {
 						minI = i;
 						minJ = j;
 						minDist = simWord_origin.get(i).get(j);
-
-						System.out.println("i:" + i + "j:" + j + "minDist:" + minDist);
 					}
 				}
 			}
