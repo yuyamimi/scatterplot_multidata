@@ -36,12 +36,13 @@ public class HierarchicalClustering {
 
 		// クラスタリング
 		//List<List<Integer>> clusters = hierarchicalClustering(simMatrix);// 最短距離法
+		List<List<Integer>> clusters = longhierarchicalClustering(simMatrix);// 最長距離法
 		//List<List<Integer>> clusters = centralClustering(simMatrix, parray);// 重心法
 		// List<List<Integer>> clusters = kmeansClustering(simMatrix, count,
 		// parray);//kmeans法
 
 		
-		List<List<Integer>> clusters = WardMethodClustering(simMatrix, count,parray);// ウォード法
+		//List<List<Integer>> clusters = WardMethodClustering(simMatrix, count,parray);// ウォード法
 		//List<List<Integer>> clusters = normal(count);// ウォード法
 	
 		System.out.println();
@@ -154,6 +155,71 @@ public class HierarchicalClustering {
 		return min;
 	}
 
+	private static List<List<Integer>> longhierarchicalClustering(double[][] simMatrix) {
+		int n = simMatrix.length;
+
+		// 初期クラスタ：各要素を1つのクラスタとする
+		clusters = new ArrayList<>();
+		for (int i = 0; i < n; i++) {
+			List<Integer> cluster = new ArrayList<>();
+			cluster.add(i);
+			clusters.add(cluster);
+		}
+		// クラスタ数がNUMCLUSTERになるまでマージを繰り返す
+		while (clusters.size() > NUMCLUSTER) {
+			// 最も類似度が高い2つのクラスタをマージする
+			int minI = 0, minJ = 1;
+
+			double minDist = Double.MIN_VALUE;
+			for (int i = 0; i < clusters.size(); i++) {
+				List<Integer> cluster = clusters.get(i);
+				for (int j = 0; j < cluster.size(); j++) {
+					System.out.print(cluster.get(j) + " ");
+				}
+				System.out.println("");
+				for (int j = i + 1; j < clusters.size(); j++) {
+					double dist = computeClusterLongDistance(clusters.get(i), clusters.get(j), simMatrix);
+					if (dist > minDist) {
+						minI = i;
+						minJ = j;
+						minDist = dist;
+					}
+				}
+			}
+			// マージした新しいクラスタを作成し、既存のクラスタから削除する
+			List<Integer> mergedCluster = new ArrayList<>();
+			mergedCluster.addAll(clusters.get(minI));
+			mergedCluster.addAll(clusters.get(minJ));
+			if (minJ < minI) {
+				clusters.remove(minI);
+				clusters.remove(minJ);
+			} else {
+				clusters.remove(minJ);
+				clusters.remove(minI);
+			}
+			clusters.add(mergedCluster);
+			
+		}
+
+		return clusters;
+	}
+
+	private static double computeClusterLongDistance(List<Integer> cluster1, List<Integer> cluster2, double[][] simMatrix) {
+		 double max = Double.MIN_VALUE;
+
+		    for (int i : cluster1) {
+		        for (int j : cluster2) {
+		            if (simMatrix[i][j] > max) {
+		                max = simMatrix[i][j];
+		            }
+		        }
+		    }
+
+		    return max;
+	}
+
+	
+	
 	// 重心法
 	private static List<List<Integer>> centralClustering(double[][] simMatrix, DimensionPair[] parray) {
 		int n = simMatrix.length;
